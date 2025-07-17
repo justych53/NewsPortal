@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="NewsPortal.Application\**" />
+    <Compile Remove="NewsPortal.Core\**" />
+    <Compile Remove="NewsPortal.DataAccess\**" />
+    <Content Remove="NewsPortal.Application\**" />
+    <Content Remove="NewsPortal.Core\**" />
+    <Content Remove="NewsPortal.DataAccess\**" />
+    <EmbeddedResource Remove="NewsPortal.Application\**" />
+    <EmbeddedResource Remove="NewsPortal.Core\**" />
+    <EmbeddedResource Remove="NewsPortal.DataAccess\**" />
+    <None Remove="NewsPortal.Application\**" />
+    <None Remove="NewsPortal.Core\**" />
+    <None Remove="NewsPortal.DataAccess\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="NewsPortal.Application\NewsPortal.Application.csproj" />
+    <ProjectReference Include="NewsPortal.Core\NewsPortal.Core.csproj" />
+    <ProjectReference Include="NewsPortal.DataAccess\NewsPortal.DataAccess.csproj" />
+  </ItemGroup>
+
+
+</Project>
