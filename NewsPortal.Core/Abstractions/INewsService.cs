@@ -7,6 +7,7 @@ namespace NewsPortal.Application.Services
         Task<Guid> CreateNews(News news);
         Task<Guid> DeleteNews(Guid id);
         Task<List<News>> GetAllNews();
-        Task<Guid> UpdateNews(Guid id, string title, string categoryName, DateTime createdAt, string shortPhrase, string description);
+        Task<Guid> UpdateNews(Guid id, string title, Guid categoryId, string shortPhrase, string description);
+        Task<News?> GetNewsById(Guid id);
     }
 }

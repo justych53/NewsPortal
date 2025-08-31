@@ -1,0 +1,45 @@
+<div class="news-detail-container">
+  <div class="news-header">
+    <button (click)="goBack()" class="back-btn">← Назад к новостям</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Загрузка новости...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="btn-primary">Вернуться на главную</button>
+  </div>
+
+  <div *ngIf="newsArticle && !isLoading" class="news-content">
+    <article class="news-article">
+      <header class="article-header">
+        <h1 class="article-title">{{ newsArticle.title }}</h1>
+
+        <div class="article-meta">
+          <span *ngIf="category" class="article-category">
+            {{ category.name }}
+          </span>
+          <span class="article-date">
+            {{ newsArticle.createdAt | date:'dd.MM.yyyy HH:mm' }}
+          </span>
+        </div>
+
+        <div *ngIf="newsArticle.shortPhrase" class="article-short">
+          {{ newsArticle.shortPhrase }}
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div [innerHTML]="newsArticle.description"></div>
+      </div>
+
+      <footer class="article-footer">
+        <button (click)="goBack()" class="btn-primary">
+          ← Все новости
+        </button>
+      </footer>
+    </article>
+  </div>
+</div>

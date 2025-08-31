@@ -1,0 +1,61 @@
+<header class="header">
+  <div class="container">
+    <div class="logo">
+      <h1>Новостник</h1>
+    </div>
+    <nav class="nav">
+      <a routerLink="/" class="nav-link">Главная</a>
+
+      <ng-container *ngIf="!isAuthenticated; else authenticated">
+        <button class="login-btn" (click)="openLogin()">Войти</button>
+      </ng-container>
+
+      <ng-template #authenticated>
+        <a routerLink="/admin" class="nav-link">Админка</a>
+        <button class="login-btn" (click)="logout()">Выйти</button>
+      </ng-template>
+    </nav>
+  </div>
+
+  <!-- Модальное окно логина -->
+  <div *ngIf="showLoginModal" class="modal-overlay" (click)="closeLogin()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Вход в админку</h2>
+        <button class="close-btn" (click)="closeLogin()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="loginError" class="error-message">
+          {{ loginError }}
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="username">Логин:</label>
+            <input type="text"
+                   id="username"
+                   formControlName="userName"
+                   required
+                   placeholder="Введите логин">
+          </div>
+
+          <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password"
+                   id="password"
+                   formControlName="password"
+                   required
+                   placeholder="Введите пароль">
+          </div>
+
+          <button type="submit"
+                  class="submit-btn"
+                  [disabled]="loginForm.invalid">
+            Войти
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>

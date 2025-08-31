@@ -1,0 +1,39 @@
+<div class="slider">
+  <div class="slider-container">
+    <!-- Состояние загрузки -->
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Загрузка изображений...</p>
+    </div>
+
+    <!-- Ошибка -->
+    <div *ngIf="error && !loading" class="error">
+      <p>❌ {{ error }}</p>
+      <p>Проверьте консоль для подробностей</p>
+    </div>
+
+    <!-- Нет изображений -->
+    <div *ngIf="!loading && images.length === 0 && !error" class="no-images">
+      <p>📷 Изображения не найдены</p>
+      <p>Добавьте изображения через админку</p>
+    </div>
+
+    <!-- Слайды -->
+    <div class="slide" *ngFor="let image of images; let i = index"
+         [class.active]="i === currentIndex">
+      <img [src]="image.url" [alt]="'Слайд ' + (i + 1)" class="slide-image"
+           (error)="handleImageError(image, $event)">
+    </div>
+  </div>
+
+  <!-- Кнопки навигации -->
+  <button *ngIf="images.length > 1" class="slider-btn prev" (click)="prevSlide()">‹</button>
+  <button *ngIf="images.length > 1" class="slider-btn next" (click)="nextSlide()">›</button>
+
+  <!-- Точки навигации -->
+  <div *ngIf="images.length > 1" class="slider-dots">
+    <span *ngFor="let image of images; let i = index"
+          [class.active]="i === currentIndex"
+          (click)="goToSlide(i)"></span>
+  </div>
+</div>

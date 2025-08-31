@@ -1,34 +1,90 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using NewsPortal.Models;
-using NewsPortal.DataAccess.Repositories;
+
 namespace NewsPortal.Auth
 {
-    public class AccountService(AccountRepository accountRepository, JwtService jwtService)
+    public class AccountService
     {
-        public void Register(string userName, string firstName, string password)
+        private readonly JwtService _jwtService;
+        private readonly string _userName = "admin";
+        private readonly string _passwordHash;
+
+        public AccountService(JwtService jwtService)
         {
-            var account = new Account(Guid.NewGuid(), userName, firstName, string.Empty);
-            var passHash = new PasswordHasher<Account>().HashPassword(account, password);
-            account.PasswordHash = passHash;
-            accountRepository.Add(account);
+            _jwtService = jwtService;
+
+            _passwordHash = "AQAAAAIAAYagAAAAEGPsYjneutZSpFoP7R2FTV5bX1INWavBddbiLdUb/edFTMtT0cZb61twzOgusvza+Q==";
+
+            Console.WriteLine("AccountService initialized");
         }
 
         public async Task<string> Login(string userName, string password)
-
         {
-            var account = await accountRepository.GetByUserName(userName);
-            if (account == null)
+            try
             {
+                Console.WriteLine("=== LOGIN ATTEMPT ===");
+                Console.WriteLine($"Username: '{userName}' == 'admin': {userName == "admin"}");
+
+                if (userName != _userName)
+                {
+                    Console.WriteLine("❌ Username mismatch!");
+                    throw new Exception("Unauthorized");
+                }
+
+                Console.WriteLine("✅ Username correct");
+
+
+                Console.WriteLine($"Password hash length: {_passwordHash?.Length}");
+                Console.WriteLine($"Hash starts with: {_passwordHash?.Substring(0, 20)}...");
+                Console.WriteLine($"Hash ends with: ...{_passwordHash?.Substring(_passwordHash.Length - 20)}");
+
+                var result = new PasswordHasher<object>().VerifyHashedPassword(null, _passwordHash, password);
+                Console.WriteLine($"Password verification result: {result}");
+
+                if (result == PasswordVerificationResult.Success)
+                {
+                    Console.WriteLine("✅ Password correct!");
+
+                    var tempAccount = new Account(
+                        Guid.NewGuid(),
+                        _userName,
+                        "Administrator",
+                        ""
+                    );
+
+                    var token = _jwtService.GenerateToken(tempAccount);
+                    Console.WriteLine("✅ Token generated successfully");
+
+                    return token;
+                }
+
+                Console.WriteLine("❌ Password verification failed!");
                 throw new Exception("Unauthorized");
             }
-            var result = new PasswordHasher<Account>().VerifyHashedPassword(account, account.PasswordHash, password);
-            if (result == PasswordVerificationResult.Success)
+            catch (Exception ex)
             {
-                return jwtService.GenerateToken(account);
+                Console.WriteLine($"💥 Exception: {ex.Message}");
+                Console.WriteLine($"Exception type: {ex.GetType().Name}");
+                throw;
             }
-            else
+        }
+
+        // Метод для проверки хеша
+        public void ValidateHash()
+        {
+            try
             {
-                throw new Exception("Unauthorized");
+                Console.WriteLine("=== VALIDATING HASH ===");
+                Console.WriteLine($"Hash: {_passwordHash}");
+                Console.WriteLine($"Length: {_passwordHash?.Length}");
+
+                // Пробуем проверить хеш с пустым паролем
+                var testResult = new PasswordHasher<object>().VerifyHashedPassword(null, _passwordHash, "");
+                Console.WriteLine($"Test verification: {testResult}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 Hash validation failed: {ex.Message}");
             }
         }
     }

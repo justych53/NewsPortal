@@ -8,5 +8,6 @@ namespace NewsPortal.Application.Services
         Task<Guid> DeleteCategory(Guid id);
         Task<List<Category>> GetAllCategories();
         Task<Guid> UpdateCategory(Guid id, string name);
+        Task<bool> CategoryExists(Guid categoryId);
     }
 }

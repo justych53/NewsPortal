@@ -25,6 +25,10 @@ namespace NewsPortal.Application.Services
         {
             return await _categoryRepository.Delete(id);
         }
+        public async Task<bool> CategoryExists(Guid categoryId)
+        {
+            return await _categoryRepository.CategoryExists(categoryId);
+        }
     }
 
 }

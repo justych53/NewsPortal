@@ -4,21 +4,34 @@ using NewsPortal.Auth;
 namespace NewsPortal.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class AuthController(AccountService accountService): ControllerBase
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    [HttpPost("register")]
+    private readonly AccountService _accountService;
 
-    public IActionResult Register([FromBody]RegisterUserRequest request)
+    public AuthController(AccountService accountService)
     {
-        accountService.Register(request.UserName, request.FirstName, request.Password);
-        return NoContent();
+        _accountService = accountService;
     }
 
     [HttpPost("login")]
-    public IActionResult Login(string userName, string password)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var token = accountService.Login(userName, password);
-        return Ok(token);
+        try
+        {
+            var token = await _accountService.Login(request.UserName, request.Password);
+            return Ok(new { Token = token });
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(new { Error = "Invalid credentials" });
+        }
     }
+
+}
+
+public class LoginRequest
+{
+    public string UserName { get; set; }
+    public string Password { get; set; }
 }

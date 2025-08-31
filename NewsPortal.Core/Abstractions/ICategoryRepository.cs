@@ -8,5 +8,6 @@ namespace NewsPortal.DataAccess.Repositories
         Task<Guid> Delete(Guid id);
         Task<List<Category>> Get();
         Task<Guid> Update(Guid id, string name);
+        Task<bool> CategoryExists(Guid categoryId);
     }
 }

@@ -54,5 +54,9 @@ namespace NewsPortal.DataAccess.Repositories
                 .ExecuteDeleteAsync();
             return id;
         }
+        public async Task<bool> CategoryExists(Guid categoryId)
+        {
+            return await _context.Categories.AnyAsync(c => c.Id == categoryId);
+        }
     }
 }

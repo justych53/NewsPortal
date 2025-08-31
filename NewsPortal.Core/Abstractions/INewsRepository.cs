@@ -7,6 +7,6 @@ namespace NewsPortal.DataAccess.Repositories
         Task<Guid> Create(News news);
         Task<Guid> Delete(Guid id);
         Task<List<News>> Get();
-        Task<Guid> Update(Guid id, string title, string categoryName, DateTime createdAt, string shortPhrase, string description);
+        Task<Guid> Update(Guid id, string title, Guid categoryId, string shortPhrase, string description);
     }
 }

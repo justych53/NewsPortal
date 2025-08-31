@@ -4,12 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsPortal", "NewsPortal.csproj", "{C980FA68-F252-4A5F-BA36-700BD4C553B2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229} = {C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsPortal.DataAccess", "NewsPortal.DataAccess\NewsPortal.DataAccess.csproj", "{762B463C-1BFB-4CCC-A58A-D8C3AE00DEBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsPortal.Core", "NewsPortal.Core\NewsPortal.Core.csproj", "{6E67D8E1-A35F-4F1B-8405-DC4E227ED152}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsPortal.Application", "NewsPortal.Application\NewsPortal.Application.csproj", "{AFCE01EB-A774-4523-B8BC-DBF409FB9025}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "NewsPortal.Frontend", "NewsPortal.Frontend\NewsPortal.Frontend.esproj", "{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,12 @@ Global
 		{AFCE01EB-A774-4523-B8BC-DBF409FB9025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFCE01EB-A774-4523-B8BC-DBF409FB9025}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFCE01EB-A774-4523-B8BC-DBF409FB9025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E8630D-F7FA-0E85-BAB2-B7E0D739A229}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

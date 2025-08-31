@@ -1,0 +1,296 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Панель администратора</h1>
+  </div>
+
+  <div class="admin-content">
+    <!-- Боковая панель навигации -->
+    <div class="admin-sidebar">
+      <nav class="admin-nav">
+        <button (click)="selectSection('dashboard')"
+                [class.active]="currentSection === 'dashboard'"
+                class="nav-btn">
+          Обзор
+        </button>
+        <button (click)="selectSection('news')"
+                [class.active]="currentSection === 'news'"
+                class="nav-btn">
+          Новости
+        </button>
+        <button (click)="selectSection('categories')"
+                [class.active]="currentSection === 'categories'"
+                class="nav-btn">
+          Категории
+        </button>
+        <button (click)="selectSection('images')"
+                [class.active]="currentSection === 'images'"
+                class="nav-btn">
+          Изображения
+        </button>
+      </nav>
+
+      <div class="token-info">
+        <h3>Токен авторизации</h3>
+        <p class="token-preview">{{ authToken ? (authToken | slice:0:20) + '...' : 'Нет токена' }}</p>
+      </div>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="admin-main">
+      <!-- Секция Обзор -->
+      <div *ngIf="currentSection === 'dashboard'" class="section">
+        <h2>Добро пожаловать в панель управления</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Новостные статьи</h3>
+            <p class="stat-number">{{ newsArticles.length }}</p>
+          </div>
+          <div class="stat-card">
+            <h3>Изображения</h3>
+            <p class="stat-number">{{ images.length }}</p>
+          </div>
+          <div class="stat-card">
+            <h3>Категории</h3>
+            <p class="stat-number">{{ categories.length }}</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Секция Категории -->
+      <div *ngIf="currentSection === 'categories'" class="section">
+        <h2>Управление категориями</h2>
+
+        <div class="form-group">
+          <input type="text"
+                 [(ngModel)]="newCategory.name"
+                 placeholder="Название категории"
+                 class="form-input">
+          <button (click)="createCategory()" class="btn-primary">Добавить категорию</button>
+        </div>
+
+        <div class="list">
+          <div *ngFor="let category of categories" class="list-item">
+            <div *ngIf="editingCategory?.id !== category.id; else editCategory">
+              <div class="item-content">
+                <span class="item-text">{{ category.name }}</span>
+              </div>
+              <div class="actions">
+                <button (click)="startEditCategory(category)" class="btn-edit">Редактировать</button>
+                <button (click)="deleteCategory(category.id)" class="btn-delete">Удалить</button>
+              </div>
+            </div>
+
+            <ng-template #editCategory>
+              <div class="item-content">
+                <div class="edit-form">
+                  <input type="text"
+                         [(ngModel)]="editingCategory!.name"
+                         class="form-input"
+                         placeholder="Название категории" />
+                  <div class="actions">
+                    <button (click)="updateCategory()" class="btn-save">Сохранить</button>
+                    <button (click)="editingCategory = null" class="btn-cancel">Отмена</button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция Изображения -->
+      <div *ngIf="currentSection === 'images'" class="section">
+        <h2>Управление изображениями</h2>
+
+        <div class="upload-info">
+          <p class="info-text">
+            <strong>Важно:</strong> Изображения должны храниться в папке Images проекта NewsPortal.Core.
+            После выбора файла путь автоматически формируется как /images/названиефайла.jpg
+            (файл не загружается, сохраняется только путь)
+          </p>
+        </div>
+
+        <!-- Форма добавления нового изображения -->
+        <div class="form-group">
+          <div class="file-upload-group">
+            <label for="imageFile" class="file-label">
+              <span class="file-button">Выбрать изображение</span>
+              <span class="file-name">{{ selectedFile ? selectedFile.name : 'Файл не выбран' }}</span>
+            </label>
+            <input type="file"
+                   id="imageFile"
+                   (change)="onFileSelected($event, false)"
+                   accept="image/*"
+                   class="file-input">
+          </div>
+
+          <input type="text"
+                 [(ngModel)]="newImage.url"
+                 placeholder="Путь к изображению"
+                 class="form-input"
+                 readonly>
+
+          <button (click)="createImage()"
+                  [disabled]="!newImage.url"
+                  class="btn-primary">
+            Сохранить путь
+          </button>
+        </div>
+
+        <!-- Список существующих изображений -->
+        <div class="list">
+          <div *ngFor="let image of images" class="list-item">
+            <div *ngIf="editingImage?.id !== image.id; else editImage">
+              <div class="item-content">
+                <div class="image-info">
+                  <div class="image-preview" *ngIf="image.url">
+                    <img [src]="image.url" alt="Preview" onerror="this.style.display='none'">
+                  </div>
+                  <span class="item-text">{{ image.url }}</span>
+                </div>
+              </div>
+              <div class="actions">
+                <button (click)="startEditImage(image)" class="btn-edit">Редактировать</button>
+                <button (click)="deleteImage(image.id)" class="btn-delete">Удалить</button>
+              </div>
+            </div>
+
+            <!-- Форма редактирования изображения -->
+            <ng-template #editImage>
+              <div class="item-content">
+                <div class="edit-form">
+                  <div class="file-upload-group">
+                    <label [for]="'editFile_' + editingImage?.id" class="file-label">
+                      <span class="file-button">Выбрать новое изображение</span>
+                      <span class="file-name">{{ editingFile ? editingFile.name : 'Файл не выбран' }}</span>
+                    </label>
+                    <input type="file"
+                           [id]="'editFile_' + editingImage?.id"
+                           (change)="onEditFileSelected($event)"
+                           accept="image/*"
+                           class="file-input">
+                  </div>
+
+                  <input type="text"
+                         [(ngModel)]="editingImage!.url"
+                         class="form-input"
+                         placeholder="Путь к изображению" />
+
+                  <div class="actions">
+                    <button (click)="updateImage()" class="btn-save">Сохранить</button>
+                    <button (click)="editingImage = null; editingFile = null" class="btn-cancel">Отмена</button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <!-- Секция Новости -->
+      <div *ngIf="currentSection === 'news'" class="section">
+        <h2>Управление новостями</h2>
+
+        <!-- Форма создания новости -->
+        <div class="news-form">
+          <h3>Создать новую новость</h3>
+
+          <div class="form-group">
+            <input type="text"
+                   [(ngModel)]="newNews.title"
+                   placeholder="Заголовок новости *"
+                   class="form-input">
+          </div>
+
+          <div class="form-group">
+            <select [(ngModel)]="newNews.categoryId" class="form-input">
+              <option value="">Выберите категорию *</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <input type="text"
+                   [(ngModel)]="newNews.shortPhrase"
+                   placeholder="Краткое описание"
+                   class="form-input">
+          </div>
+
+          <div class="form-group">
+            <textarea [(ngModel)]="newNews.description"
+                      placeholder="Полное содержание новости *"
+                      class="form-input"
+                      rows="6"></textarea>
+          </div>
+
+          <button (click)="createNews()" class="btn-primary">Создать новость</button>
+        </div>
+
+        <!-- Список новостей -->
+        <div class="list">
+          <div *ngFor="let news of newsArticles" class="list-item">
+            <div *ngIf="editingNews?.id !== news.id; else editNews">
+              <div class="item-content">
+                <h4 class="news-title">{{ news.title }}</h4>
+                <p class="news-category">
+                  Категория: {{ getCategoryName(news.categoryId) }}
+                </p>
+                <p class="news-short">{{ news.shortPhrase || 'Без краткого описания' }}</p>
+                <p class="news-date">
+                  Создано: {{ news.createdAt | date:'dd.MM.yyyy HH:mm' }}
+                </p>
+              </div>
+              <div class="actions">
+                <button (click)="startEditNews(news)" class="btn-edit">Редактировать</button>
+                <button (click)="deleteNews(news.id)" class="btn-delete">Удалить</button>
+              </div>
+            </div>
+
+            <!-- Форма редактирования новости -->
+            <ng-template #editNews>
+              <div class="item-content">
+                <div class="edit-form">
+                  <div class="form-group">
+                    <input type="text"
+                           [(ngModel)]="editingNews!.title"
+                           placeholder="Заголовок новости"
+                           class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <select [(ngModel)]="editingNews!.categoryId" class="form-input">
+                      <option *ngFor="let category of categories" [value]="category.id">
+                        {{ category.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <input type="text"
+                           [(ngModel)]="editingNews!.shortPhrase"
+                           placeholder="Краткое описание"
+                           class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <textarea [(ngModel)]="editingNews!.description"
+                              placeholder="Полное содержание новости"
+                              class="form-input"
+                              rows="6"></textarea>
+                  </div>
+
+                  <div class="actions">
+                    <button (click)="updateNews()" class="btn-save">Сохранить</button>
+                    <button (click)="editingNews = null" class="btn-cancel">Отмена</button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
